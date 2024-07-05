@@ -1,0 +1,9 @@
+{
+  "name": "@jhenbert/byteminds-util",
+  "version": "0.1.2",
+  "exports": "./mod.ts",
+  "description": "A collection of useful utilities for Byteminds PH.",
+  "publish": {
+    "exclude": ["node_modules", "test.ts", ".npmrc", ".gitignore"]
+  }
+}
