@@ -37,13 +37,13 @@ import * as mod from "@jhenbert/byteminds-util";
 ## Example
 
 ```typescript
-const sendMail = async () => {
+const sendEmail = async () => {
   const from = "sender@example.com";
   const to = "recipient@example.com";
   const subject = "Hello!";
   const body = "<p>This is a test email.</p>";
 
-  const message = composeMessage(from, to, subject, body);
+  const message = mod.composeMessage(from, to, subject, body);
 
   const host = "smtp.example.com";
   const port = 587;
@@ -52,7 +52,7 @@ const sendMail = async () => {
   const email = "user@example.com";
   const password = "user_app_password";
 
-  const transporter = mailTransporter(
+  const transporter = mod.mailTransporter(
     host,
     port,
     secure,

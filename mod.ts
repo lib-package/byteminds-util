@@ -1,3 +1,5 @@
+import { Cookies } from "@sveltejs/kit";
+import { Lucia } from "lucia";
 import * as nodemailer from "nodemailer";
 import type SMTPTransport from "nodemailer/lib/smtp-transport";
 
@@ -105,5 +107,82 @@ export const mailTransporter = (
       user: email,
       pass: password,
     },
+  });
+};
+
+/**
+ * Creates a new session for a user and sets the session cookie in the provided cookies object.
+ *
+ * @param {Lucia} lucia - An instance of the Lucia authentication library.
+ * @param {string} userId - The unique identifier of the user for whom the session is being created.
+ * @param {Cookies} cookies - An object representing the cookies to be set in the HTTP response.
+ *
+ * @returns {Promise<void>} - A promise that resolves when the session and cookie have been successfully created and set.
+ *
+ * @example
+ * import type { Actions, PageServerLoad } from "./$types";
+ * import { lucia } from "$lib/server/auth";
+ * import * as mod from "@jhenbert/byteminds-util";
+ *
+ * export const actions: Actions = {
+ * login: async ({ request, url, cookies }) => {
+ *
+ * //some of your code
+ *
+ * await mod.luciaCreateAndSetSession(lucia, existingUser.id, cookies);
+ * },
+ */
+export const createAndSetSession = async (
+  lucia: Lucia,
+  userId: string,
+  cookies: Cookies
+): Promise<void> => {
+  // Create a new session for the specified user
+  const session = await lucia.createSession(userId, {});
+
+  // Generate a session cookie using the session ID
+  const sessionCookie = lucia.createSessionCookie(session.id);
+
+  // Set the session cookie in the cookies object with the appropriate attributes
+  cookies.set(sessionCookie.name, sessionCookie.value, {
+    path: ".",
+    ...sessionCookie.attributes,
+  });
+};
+
+/**
+ * Deletes the current session cookie by setting a blank session cookie in the provided cookies object.
+ *
+ * @param {Lucia} lucia - An instance of the Lucia authentication library.
+ * @param {Cookies} cookies - An object representing the cookies to be set in the HTTP response.
+ *
+ * @returns {Promise<void>} - A promise that resolves when the session cookie has been successfully deleted.
+ *
+ * @example
+ * import type { Actions } from "./$types";
+ * import { lucia } from "$lib/server/auth";
+ * import * as mod from "@jhenbert/byteminds-util";
+ * 
+ * export const actions: Actions = {
+ * default: async ({ locals, cookies }) => {
+ * 
+ * //some of your codes
+ * 
+ * await mod.luciaDeleteSessionCookie(lucia, cookies);
+ * 
+ * },
+};
+ */
+export const deleteSessionCookie = async (
+  lucia: Lucia,
+  cookies: Cookies
+): Promise<void> => {
+  // Create a blank session cookie to delete the current session cookie
+  const sessionCookie = lucia.createBlankSessionCookie();
+
+  // Set the blank session cookie in the cookies object with the appropriate attributes
+  cookies.set(sessionCookie.name, sessionCookie.value, {
+    path: ".",
+    ...sessionCookie.attributes,
   });
 };
