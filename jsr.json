@@ -1,6 +1,6 @@
 {
   "name": "@jhenbert/byteminds-util",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "exports": "./mod.ts",
   "description": "A collection of useful utilities for Byteminds PH.",
   "publish": {
